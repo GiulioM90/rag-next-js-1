@@ -14,6 +14,16 @@ type Props = {}
 
 const VectorDBPage = (props: Props) => {
   const [isUploading, setIsUploading] = useState(true)
+  const [indexName, setIndexName] = useState('')
+  const [namespace, setNamespace] = useState('')
+  const onStartUpload = async () => {
+      const response = await fetch('api/updatedatabase', { method: 'POST', body : JSON.stringify({
+        indexName,
+        namespace
+      })})
+      console.log(response)
+      // await processStreamedProgress(response)
+  }
   return (
     <main className='flex flex-col items-center p-24'>
       <Card>
@@ -38,19 +48,19 @@ const VectorDBPage = (props: Props) => {
                     <Label>
                       Index Name
                     </Label>
-                    <Input placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
+                    <Input value={indexName} onChange={e => setIndexName(e.target.value)} placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
                     </Input>
                   </div>
                   <div>
                     <Label>
                       Namespace
                     </Label>
-                    <Input placeholder='namespace' disabled={isUploading} className='disabled:cursor-default'>
+                    <Input value={namespace} onChange={e => setNamespace(e.target.value)} placeholder='namespace' disabled={isUploading} className='disabled:cursor-default'>
                     </Input>
                   </div>
                 </div>
               </div>
-              <Button variant={'outline'} className='w-full h-full' disabled={isUploading}>
+              <Button onClick={onStartUpload} variant={'outline'} className='w-full h-full' disabled={isUploading}>
                 <span className='flex flex-row'>
                   <Database size={50} className='stroke-[#D90013]'/>
                   <MoveUp className='stroke-[#D90013]'/>
