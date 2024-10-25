@@ -3,15 +3,16 @@ import { TextLoader } from "langchain/document_loaders/fs/text";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Pinecone } from "@pinecone-database/pinecone";
+import { updateVectorDB } from "@/utils";
 
 const postDB =  async (req:NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
-    const { indexname, namespace} = JSON.parse(req.bbody)
+    const { indexname, namespace} = JSON.parse(req.body)
     await handleUpload(indexname, namespace, res)
   }
 }
 
-const handleUpload = (indexname : string, namespace: string, res: NextApiResponse) => {
+const handleUpload = async (indexname : string, namespace: string, res: NextApiResponse) => {
   const loader = new DirectoryLoader('./documents', {
     '.pdf': (path: string) => new PDFLoader(path, {
       splitPages: false
@@ -21,6 +22,20 @@ const handleUpload = (indexname : string, namespace: string, res: NextApiRespons
   const docs = await loader.load()
   const client = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!
+  })
+  await updateVectorDB(client, indexname, namespace, docs, (filename, totalChunks, chunkUpserted, isComplete) => {
+    if (!isComplete){
+      res.write(
+        JSON.stringify({
+          filename,
+          totalChunks,
+          chunkUpserted,
+          isComplete
+        })
+      )
+    }else{
+      res.end()
+    }
   })
 }
 
