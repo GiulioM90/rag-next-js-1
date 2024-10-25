@@ -14,11 +14,11 @@ type Props = {}
 
 const VectorDBPage = (props: Props) => {
   const [isUploading, setIsUploading] = useState(false)
-  const [indexName, setIndexName] = useState('')
+  const [indexname, setIndexName] = useState('')
   const [namespace, setNamespace] = useState('')
   const onStartUpload = async () => {
       const response = await fetch('api/updatedatabase', { method: 'POST', body : JSON.stringify({
-        indexName,
+        indexname,
         namespace
       })})
       console.log(response)
@@ -48,7 +48,7 @@ const VectorDBPage = (props: Props) => {
                     <Label>
                       Index Name
                     </Label>
-                    <Input value={indexName} onChange={e => setIndexName(e.target.value)} placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
+                    <Input value={indexname} onChange={e => setIndexName(e.target.value)} placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
                     </Input>
                   </div>
                   <div>

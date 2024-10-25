@@ -19,6 +19,7 @@ const handleUpload = async (indexname : string, namespace: string, res: NextApiR
     }),
     '.txt': (path: string) => new TextLoader(path)
   })
+  console.log('indexname in handleUpload', indexname)
   const docs = await loader.load()
   const client = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!
