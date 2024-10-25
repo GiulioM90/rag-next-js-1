@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 type Props = {}
 
 const VectorDBPage = (props: Props) => {
-  const [isUploading, setIsUploading] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
   const [indexName, setIndexName] = useState('')
   const [namespace, setNamespace] = useState('')
   const onStartUpload = async () => {

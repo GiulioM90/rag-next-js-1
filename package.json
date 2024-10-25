@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.0.0",
     "@langchain/community": "^0.3.9",
     "@langchain/core": "^0.3.15",
     "@pinecone-database/pinecone": "^4.0.0",
