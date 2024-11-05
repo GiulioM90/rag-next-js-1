@@ -16,14 +16,49 @@ const VectorDBPage = (props: Props) => {
   const [isUploading, setIsUploading] = useState(false)
   const [indexname, setIndexName] = useState('')
   const [namespace, setNamespace] = useState('')
+  const [filename, setFilename] = useState('')
+  const [progress, setProgress] = useState(0)
   const onStartUpload = async () => {
+      setProgress(0)
+      setFilename('')
+      setIsUploading(true)
       const response = await fetch('api/updatedatabase', { method: 'POST', body : JSON.stringify({
         indexname,
         namespace
       })})
       console.log(response)
-      // await processStreamedProgress(response)
+      await processStreamedProgress(response)
   }
+
+  async function processStreamedProgress(response: Response) {
+    const reader = response.body?.getReader()
+    if (!reader) {
+      console.error('Reader was not found')
+      return
+    }
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          setIsUploading(false)
+          break
+        }
+        const data = new TextDecoder().decode(value)
+        console.log(data)
+        const {filename, totalChunks, chunksUpserted, isComplete} = JSON.parse(data)
+        const currentProgress = (chunksUpserted/totalChunks) * 100
+        setProgress(currentProgress)
+        setFilename(filename)
+        setFilename(`${filename} [${chunksUpserted}/${totalChunks}]`)
+      }
+    } catch (error) {
+        console.error("Error reading response: ", error);
+    } finally {
+        reader.releaseLock();
+    }
+  }
+
+
   return (
     <main className='flex flex-col items-center p-24'>
       <Card>
@@ -68,9 +103,9 @@ const VectorDBPage = (props: Props) => {
               </Button>
             </div>
             { isUploading && <div className='mt-4'>
-              <Label>File Name:</Label>
+              <Label>File Name: {filename}</Label>
               <div className='flex flex-row items-center gap-4'>
-                <Progress value={80}/>
+                <Progress value={progress}/>
                 <LucideLoader2 className='stroke-[#D90013] animate-spin'/>
               </div>
             </div>}
