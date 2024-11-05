@@ -18,6 +18,16 @@ const VectorDBPage = (props: Props) => {
   const [namespace, setNamespace] = useState('')
   const [filename, setFilename] = useState('')
   const [progress, setProgress] = useState(0)
+  const [fileListAsText, setFileListAsText] = useState('')
+
+  const onFileListRefresh = async () => {
+    setFileListAsText('')
+    const response = await fetch('api/getfilelist',{ method: 'GET'})
+    const filenames = await response.json()
+    const resultString = (filenames as []).map(filename => `📄 ${filename}`).join('\n');
+    setFileListAsText(resultString);
+  }
+
   const onStartUpload = async () => {
       setProgress(0)
       setFilename('')
@@ -70,13 +80,15 @@ const VectorDBPage = (props: Props) => {
             <div className='grid grid-cols-3 gap-4'>
               <div className='col-span-2 grid gap-4 border rounded-lg p-6'>
                 <div className='gap-4 relative'>
-                  <Button className='aboslute -right-4 -top-4' variant={'ghost'} size={'icon'}>
+                  <Button onClick={onFileListRefresh} className='aboslute -right-4 -top-4' variant={'ghost'} size={'icon'}>
                     <RefreshCcw />
                   </Button>
                   <Label>
                     Files List:
                   </Label>
-                  <Textarea readOnly className='min-h-24 resize-none border-p3 shadow-none disabled:cursor-default focus-visible:ring-0 text-sm text-muted-foreground'/>
+                  <Textarea readOnly value={fileListAsText}
+                    className='min-h-24 resize-none border p-3 shadow-none disabled:cursor-default focus-visible:ring-0 text-sm text-muted-foreground'
+                  />
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='grid gap-2'>

@@ -38,3 +38,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## PineCone
 
 After create account on (https://www.pinecone.io/) and your database in FE you need to put at index Name the name of your DB on Pinecone to put the chunked data
+
+## Shadcn-ui
+
+to create component use command 
+```bash
+npx shadcn-ui@latest add button card input textarea label progress
+```
