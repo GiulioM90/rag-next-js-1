@@ -24,13 +24,14 @@ const handleUpload = async (indexname : string, namespace: string, res: NextApiR
   const client = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!
   })
-  await updateVectorDB(client, indexname, namespace, docs, (filename, totalChunks, chunkUpserted, isComplete) => {
+  await updateVectorDB(client, indexname, namespace, docs, (filename, totalChunks, chunksUpserted, isComplete) => {
+    console.log(`${filename}-${totalChunks}-${chunksUpserted}-${isComplete}`)
     if (!isComplete){
       res.write(
         JSON.stringify({
           filename,
           totalChunks,
-          chunkUpserted,
+          chunksUpserted,
           isComplete
         })
       )
