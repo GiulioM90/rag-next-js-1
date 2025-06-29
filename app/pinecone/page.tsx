@@ -14,9 +14,9 @@ type Props = {}
 
 const VectorDBPage = (props: Props) => {
   const [isUploading, setIsUploading] = useState(false)
-  const [indexname, setIndexName] = useState('')
-  const [namespace, setNamespace] = useState('')
-  const [filename, setFilename] = useState('')
+  const [indexname, setIndexName] = useState(null)
+  const [namespace, setNamespace] = useState(null)
+  const [filename, setFilename] = useState(null)
   const [progress, setProgress] = useState(0)
   const [fileListAsText, setFileListAsText] = useState('')
 
@@ -29,15 +29,19 @@ const VectorDBPage = (props: Props) => {
   }
 
   const onStartUpload = async () => {
-      setProgress(0)
-      setFilename('')
-      setIsUploading(true)
-      const response = await fetch('api/updatedatabase', { method: 'POST', body : JSON.stringify({
-        indexname,
-        namespace
-      })})
-      console.log(response)
-      await processStreamedProgress(response)
+    if(indexname === null || namespace === null){
+      console.error('indexname or namespace is null')
+      return
+    }
+    setProgress(0)
+    setFilename('')
+    setIsUploading(true)
+    const response = await fetch('api/updatedatabase', { method: 'POST', body : JSON.stringify({
+      indexname,
+      namespace
+    })})
+    console.log(response)
+    await processStreamedProgress(response)
   }
 
   async function processStreamedProgress(response: Response) {
