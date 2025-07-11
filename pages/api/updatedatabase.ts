@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-// import { Pinecone } from "@pinecone-database/pinecone";
 import { createClient, loadFolder } from 'db-vector'
 import { updateVectorDB } from "@/utils";
 
