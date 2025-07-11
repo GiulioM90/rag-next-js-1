@@ -11,13 +11,11 @@ import React from 'react'
 import { Database, RefreshCcw, MoveUp, LucideLoader2 } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 
-type Props = {}
-
-const VectorDBPage = (props: Props) => {
+const VectorDBPage = () => {
   const [isUploading, setIsUploading] = useState(false)
-  const [indexname, setIndexName] = useState(null)
-  const [namespace, setNamespace] = useState(null)
-  const [filename, setFilename] = useState<null | string>(null)
+  const [indexname, setIndexName] = useState('')
+  const [namespace, setNamespace] = useState('')
+  const [filename, setFilename] = useState('')
   const [progress, setProgress] = useState(0)
   const [fileListAsText, setFileListAsText] = useState('')
   const [showError, setShowError] = useState(false)
@@ -66,7 +64,7 @@ const VectorDBPage = (props: Props) => {
         }
         const data = new TextDecoder().decode(value)
         console.log(data)
-        const {filename, totalChunks, chunksUpserted, isComplete} = JSON.parse(data)
+        const {filename, totalChunks, chunksUpserted} = JSON.parse(data)
         const currentProgress = (chunksUpserted/totalChunks) * 100
         setProgress(currentProgress)
         setFilename(filename)
@@ -114,14 +112,14 @@ const VectorDBPage = (props: Props) => {
                     <Label>
                       Index Name
                     </Label>
-                    <Input value={indexname} onChange={e => setIndexName(e.target.value)} placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
+                    <Input value={indexname || ''} onChange={e => setIndexName(e.target.value)} placeholder='index name' disabled={isUploading} className='disabled:cursor-default'>
                     </Input>
                   </div>
                   <div>
                     <Label>
                       Namespace
                     </Label>
-                    <Input value={namespace} onChange={e => setNamespace(e.target.value)} placeholder='namespace' disabled={isUploading} className='disabled:cursor-default'>
+                    <Input value={namespace || ''} onChange={e => setNamespace(e.target.value)} placeholder='namespace' disabled={isUploading} className='disabled:cursor-default'>
                     </Input>
                   </div>
                 </div>
