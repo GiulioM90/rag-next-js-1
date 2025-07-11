@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "pages/api/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "build": {
+    "env": {
+      "NEXT_PRIVATE_STANDALONE": "true"
+    }
+  }
+}
