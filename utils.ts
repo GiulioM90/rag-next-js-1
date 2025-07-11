@@ -1,5 +1,5 @@
 import { pipeline, FeatureExtractionPipeline } from "@huggingface/transformers";
-import { Pinecone, PineconeRecord, RecordMetadata } from "@pinecone-database/pinecone";
+import { PineconeRecord, RecordMetadata } from "@pinecone-database/pinecone";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { Document } from "langchain/document";
 import { batchsize } from "./config";
@@ -9,7 +9,7 @@ let totalDocumentChunks: number;
 let totalDocumentChunksUpseted: number;
 
 const updateVectorDB = async(
-  client: Pinecone,
+  client: any,
   indexname: string,
   namespace: string,
   docs: Document[],
@@ -37,7 +37,7 @@ const updateVectorDB = async(
 }
 } 
 
-async function processDocument(client: Pinecone, indexname: string, namespace: string, doc: Document<Record<string, any>>, extractor: FeatureExtractionPipeline) {
+async function processDocument(client: any, indexname: string, namespace: string, doc: Document<Record<string, any>>, extractor: FeatureExtractionPipeline) {
   const splitter = new RecursiveCharacterTextSplitter();
   const documentChunks = await splitter.splitText(doc.pageContent);
   totalDocumentChunks = documentChunks.length;
@@ -60,7 +60,7 @@ function getFilename(filename: string): string {
 }
 
 
-async function processOneBatch(client: Pinecone, indexname: string, namespace: string, extractor: FeatureExtractionPipeline, chunkBatch: string[], chunkBatchIndex: number, filename: string) {
+async function processOneBatch(client: any, indexname: string, namespace: string, extractor: FeatureExtractionPipeline, chunkBatch: string[], chunkBatchIndex: number, filename: string) {
   const output = await extractor(chunkBatch.map(str => str.replace(/\n/g, ' ')), {
     pooling: 'cls'
 });

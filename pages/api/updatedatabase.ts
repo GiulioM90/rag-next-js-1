@@ -1,8 +1,6 @@
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
-import { TextLoader } from "langchain/document_loaders/fs/text";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Pinecone } from "@pinecone-database/pinecone";
+// import { Pinecone } from "@pinecone-database/pinecone";
+import { createClient, loadFolder } from 'db-vector'
 import { updateVectorDB } from "@/utils";
 
 const postDB =  async (req:NextApiRequest, res: NextApiResponse) => {
@@ -13,17 +11,16 @@ const postDB =  async (req:NextApiRequest, res: NextApiResponse) => {
 }
 
 const handleUpload = async (indexname : string, namespace: string, res: NextApiResponse) => {
-  const loader = new DirectoryLoader('./documents', {
-    '.pdf': (path: string) => new PDFLoader(path, {
-      splitPages: false
-    }),
-    '.txt': (path: string) => new TextLoader(path)
-  })
+
   console.log('indexname in handleUpload', indexname)
-  const docs = await loader.load()
-  const client = new Pinecone({
-      apiKey: process.env.PINECONE_API_KEY!
-  })
+  const docs = await loadFolder('./documents')
+
+  const client = createClient({
+    provider: 'pinecone',
+    apiKey: process.env.PINECONE_API_KEY!,
+    config: {}
+  });
+
   await updateVectorDB(client, indexname, namespace, docs, (filename, totalChunks, chunksUpserted, isComplete) => {
     console.log(`${filename}-${totalChunks}-${chunksUpserted}-${isComplete}`)
     if (!isComplete){

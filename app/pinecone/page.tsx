@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
+import { Callout } from '@/components/ui/Callout'
 import React from 'react'
 import { Database, RefreshCcw, MoveUp, LucideLoader2 } from 'lucide-react'
 import { Label } from '@/components/ui/label'
@@ -19,6 +20,8 @@ const VectorDBPage = (props: Props) => {
   const [filename, setFilename] = useState(null)
   const [progress, setProgress] = useState(0)
   const [fileListAsText, setFileListAsText] = useState('')
+  const [showError, setShowError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const onFileListRefresh = async () => {
     setFileListAsText('')
@@ -29,8 +32,12 @@ const VectorDBPage = (props: Props) => {
   }
 
   const onStartUpload = async () => {
-    if(indexname === null || namespace === null){
-      console.error('indexname or namespace is null')
+    if(!indexname || !namespace){
+      const missing = []
+      if (!indexname) missing.push('Index Name')
+      if (!namespace) missing.push('Namespace')
+      setErrorMessage(`Please fill in: ${missing.join(', ')}`)
+      setShowError(true)
       return
     }
     setProgress(0)
@@ -72,6 +79,14 @@ const VectorDBPage = (props: Props) => {
     }
   }
 
+  useEffect(() => {
+    if (showError) {
+      const timer = setTimeout(() => {
+        setShowError(false)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [showError])
 
   return (
     <main className='flex flex-col items-center p-24'>
@@ -110,6 +125,11 @@ const VectorDBPage = (props: Props) => {
                     </Input>
                   </div>
                 </div>
+              {showError && (
+                <Callout variant="error">
+                  {errorMessage}
+                </Callout>
+              )}
               </div>
               <Button onClick={onStartUpload} variant={'outline'} className='w-full h-full' disabled={isUploading}>
                 <span className='flex flex-row'>
