@@ -17,7 +17,7 @@ const VectorDBPage = (props: Props) => {
   const [isUploading, setIsUploading] = useState(false)
   const [indexname, setIndexName] = useState(null)
   const [namespace, setNamespace] = useState(null)
-  const [filename, setFilename] = useState(null)
+  const [filename, setFilename] = useState<null | string>(null)
   const [progress, setProgress] = useState(0)
   const [fileListAsText, setFileListAsText] = useState('')
   const [showError, setShowError] = useState(false)
