@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ['langchain', '@langchain/community']
+    serverComponentsExternalPackages: ['langchain', '@langchain/community','onnxruntime-node']
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
